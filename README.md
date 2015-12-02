@@ -5,13 +5,19 @@ Use a Kalman Filter to predict the movement of an object ofver space through tim
 1. Choose an interesting problem to estimate
 2. Establish data set to be used and manipulated
 3. Create a data generator
+  - P_t = P_(t-1) + V_t * t + A_t * (t^2)/2
+  - V_t = V_(t-1) + A_t * t
+   => Need to generate A_t and *given* P_0, V_0
 4. Code functions for Kalman Filter
+  - X_t = [[1 t] [0 1]] * [[P_(t-1)] [V_(t-1)]] + [[(t^2)/2] [t]] * a + E_x
+  
 5. Create visualizer
 
 ---
 
 ## Requirements
-1. Data set must be Gaussian distributed
+1. Linear Distribution 
+2. Data set and error noise must be Gaussian distributed
 
 ---
 
