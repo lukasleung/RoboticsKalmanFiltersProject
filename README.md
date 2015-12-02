@@ -9,14 +9,14 @@ Use a Kalman Filter to predict the movement of an object over space through time
   - V_t = V_(t-1) + A_t * t
    => Need to generate A_t and *given* P_0, V_0 and the correspoinding *Noise sigma*
 4. Code functions for Kalman Filter
-⋅⋅1. State Prediction X-bar
-  - [[P_t] [V_t]] = [[1 t] [0 1]] * [[P_(t-1)] [V_(t-1)]] + [[(t^2)/2] [t]] * a + E_x
-  - E_x = [[(sig_p)^2 sig_p*sig_v] [sig_v*sig_p (sig_v)^2]]
-⋅⋅2. Measurment Prediction Z-bar
-  - [P_t] = [1 0] * [[P_(t-1)] [V_(t-1)]] + E_z
-  - E_z = (sig_z)^2
-⋅⋅3. For Noise (E's)
-  - Need to get the standard deviation of the error of the acceleration
+  1. State Prediction X-bar
+    - [[P_t] [V_t]] = [[1 t] [0 1]] * [[P_(t-1)] [V_(t-1)]] + [[(t^2)/2] [t]] * a + E_x
+    - E_x = [[(sig_p)^2 sig_p*sig_v] [sig_v*sig_p (sig_v)^2]]
+  2. Measurment Prediction Z-bar
+    - [P_t] = [1 0] * [[P_(t-1)] [V_(t-1)]] + E_z
+    - E_z = (sig_z)^2
+  3. For Noise (E's)
+    - Need to get the standard deviation of the error of the acceleration
 5. Create visualizer
 
 ---
