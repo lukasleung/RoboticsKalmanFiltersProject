@@ -10,6 +10,7 @@
 \usepackage{graphicx}
 \usepackage[normal]{caption}
 \usepackage{subcaption}
+\usepackage{mathtools}
 
 \setlength\parindent{24pt}
 
@@ -54,6 +55,39 @@
 	%----------------------------------------------------------------------------------------
 
 	\section{Introduction}
+
+	In this project we will use Kalman filter to estimate the motion path of an aircraft.
+
+	\subsection{Physics model}\label{sub:model}
+	The following model defines the signal value.
+	\begin{equation}
+		x_t=Ax_{t-1}+Bu_t+w_{t-1}
+	\end{equation}
+	Which is
+	\begin{equation}
+		\begin{bmatrix}
+			p^{(t)}_x \\ p^{(t)}_y \\ v^{(t)}_x \\ v^{(t)}_y
+		\end{bmatrix}=
+		\underbrace{\begin{bmatrix}
+			1 & 0 & t & 0 \\
+			0 & 1 & 0 & t \\
+			0 & 0 & 1 & 0 \\
+			0 & 0 & 0 & 1
+		\end{bmatrix}}_{\text{state transition}}
+		\begin{bmatrix}
+			p^{(t-1)}_x \\ p^{(t-1)}_y \\ v^{(t-1)}_x \\ v^{(t-1)}_y
+		\end{bmatrix}+
+		\underbrace{\begin{bmatrix}
+			t^2/2 & 0 \\
+			0 & t^2/2 \\
+			t & 0 \\
+			0 & t
+		\end{bmatrix}}_{\text{control matrix}}
+		\begin{bmatrix}
+			a^{(t-1)}_x \\ a^{(t-1)}_y
+		\end{bmatrix}+w_{t-1}
+	\end{equation}
+
 
 	%----------------------------------------------------------------------------------------
 	%	SECTION 2
