@@ -1,3 +1,4 @@
+import numpy as np
 from enum import Enum
 
 
@@ -18,6 +19,18 @@ class NoiseGenerator:
         self.dimension = dimension
         self.mean = mean
         self.std_dev = std_dev
+
+    def get_mean(self):
+        return self.mean
+
+    def get_std_dev(self):
+        return self.std_dev
+
+    def get_error(self):
+        if self.dimension == 1:
+            return self.std_dev[0]**2
+        elif self.dimension == 2:
+            return np.matrix([self.std_dev[0]**2, self.std_dev[1]**2])
 
 
 if __name__ == "__main__":
