@@ -54,14 +54,15 @@
 	%	SECTION 1
 	%----------------------------------------------------------------------------------------
 
-	\section{Introduction}
+	\section{Introduction}\label{sec:intro}
+
 
 	In this project we will use Kalman filter to estimate the motion path of an aircraft.
 
 	\subsection{Physics model}\label{sub:model}
-	The following model defines the signal value.
+	The following model defines the state estimation:
 	\begin{equation}
-		x_t=Ax_{t-1}+Bu_t+w_{t-1}
+		\hat{\mathbf{x}}_t=\mathbf{A}\hat{\mathbf{x}}_{t-1}+\mathbf{B}\mathbf{u}_t+\mathbf{w}_{t-1}
 	\end{equation}
 	Which is
 	\begin{equation}
@@ -85,10 +86,48 @@
 		\end{bmatrix}}_{\text{control matrix}}
 		\begin{bmatrix}
 			a^{(t-1)}_x \\ a^{(t-1)}_y
-		\end{bmatrix}+w_{t-1}
+		\end{bmatrix}+\text{noise}
 	\end{equation}
+	whose $\text{noise}\sim\mathcal{N}\left(0,\Sigma_x\right)$. And the following defines the observation from the state
+	\begin{equation}
+		\mathbf{z}_k=\mathbf{H}\hat{\mathbf{x}}_k+\text{noise}
+	\end{equation}
+	which is
+	\begin{equation}
+		\begin{bmatrix}
+			p^{(t)}_x \\ p^{(t)}_y
+		\end{bmatrix}=
+		\underbrace{\begin{bmatrix}
+			1 & 0 & 0 & 0 \\
+			0 & 1 & 0 & 0
+		\end{bmatrix}}_{\text{estimation model}}
+		\begin{bmatrix}
+			p_x \\ p_y \\ v_x \\ v_y
+		\end{bmatrix}+\text{noise}
+	\end{equation}
+	whose $\text{noise}\sim\mathcal{N}\left(0,\Sigma_z\right)$.
 
+	\subsection{Prediction}\label{sub:predict}
+	\begin{equation}
+		p_t=\mathbf{A}p_{t-1}\mathbf{A}^T+Q
+	\end{equation}
+	where $Q$ is the convarience matrix of $E_x$.
 
+	\subsection{Measure}\label{sub:measure}
+	The Kalman gain would be
+	\begin{equation}
+		k_k=p_k\mathbf{H}^T{\left(\mathbf{H}p_k\mathbf{H}^T+R\right)}^{-1}
+	\end{equation}
+	where $r$ is the convarience matrix of $E_z$.
+	\begin{equation}
+		E_x=
+		\begin{bmatrix}
+			\sigma_1^2       &                  & \sigma_1\sigma_3 &                 \\
+			                 & \sigma_2^2       &                  & \sigma_2\sigma4 \\
+			\sigma_3\sigma_1 &                  & \sigma_3^2       &                 \\
+			                 & \sigma_4\sigma_2 &                  & \sigma_4^2      \\
+		\end{bmatrix}
+	\end{equation}
 	%----------------------------------------------------------------------------------------
 	%	SECTION 2
 	%----------------------------------------------------------------------------------------
