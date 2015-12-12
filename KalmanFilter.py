@@ -5,10 +5,10 @@ from numpy.random import normal
 
 class KalmanFilter(object):
 
-    def __init__(self, initial_estimation=np.array([0, 0, 0, 0]).reshape((4, 1)), acceleration=np.array([1, 1]).reshape((2, 1)), number_of_iters=10, delta_t=1, sig_acceleration=np.array([0.1, 0.1]), sig_obs=np.matrix([[1, 0], [0, 1]])):
-        self.true_trajectory = self.generate_trajectory(initial_estimation, acceleration, number_of_iters, delta_t)
-        self.obs = self.generate_observations(self.true_trajectory, sig_obs)
-        self.estimations = self.kalman(initial_estimation, self.obs, acceleration, number_of_iters, delta_t, sig_acceleration, sig_obs)
+    def __init__(self, true_initial_state=np.array([10, 10, 0, 0]).reshape(4, 1), initial_estimation=np.array([0, 0, 0, 0]).reshape((4, 1)), acceleration=np.array([1, 1]).reshape((2, 1)), number_of_iters=10, delta_t=1, sig_acceleration=np.array([0.1, 0.1]), var_obs=np.matrix([[1, 0], [0, 1]])):
+        self.true_trajectory = self.generate_trajectory(true_initial_state, acceleration, number_of_iters, delta_t)
+        self.obs = self.generate_observations(self.true_trajectory, var_obs)
+        self.estimations = self.kalman(initial_estimation, self.obs, acceleration, number_of_iters, delta_t, sig_acceleration, var_obs)
 
     def get_true_trajectory(self):
         return self.true_trajectory
@@ -83,26 +83,26 @@ class KalmanFilter(object):
         return states
 
     # tested
-    def generate_observations(self, true_trajectory, sig_obs):
+    def generate_observations(self, true_trajectory, var_obs):
         """ Generate the simulated noisy observations by adding random Gaussian noise
         to the true trajectory.
 
         Keyword arguments:
         true_trajectory -- a list of true states of the object in motion,
             each a vector in R^4 = [p_x, p_y, v_x, v_y]
-        sig_obs -- the covariance matrix of observation noise = [[sigma_x^2, 0], [0, sigma_y^2]]
+        var_obs -- the covariance matrix of observation noise = [[sigma_x^2, 0], [0, sigma_y^2]]
         """
         obs = []
         n = len(true_trajectory)
-        std_dev_px = sig_obs[0, 0]
-        std_dev_py = sig_obs[1, 1]
+        std_dev_px = var_obs[0, 0]
+        std_dev_py = var_obs[1, 1]
         for i in range(n):
             noise = np.array([normal(0.0, std_dev_px), normal(0.0, std_dev_py)]).reshape(2, 1)
             new_obs = true_trajectory[i][:2] + noise
             obs.append(new_obs)
         return obs
 
-    def kalman(self, initial_estimation, obs, acceleration, number_of_iters, delta_t, sig_acceleration, sig_obs):
+    def kalman(self, initial_estimation, obs, acceleration, number_of_iters, delta_t, sig_acceleration, var_obs):
         """
         """
         estimations = []
@@ -123,7 +123,7 @@ class KalmanFilter(object):
             # update P
             P = (A.dot(P)).dot(A_transpose) + E_X
             # compute the Kalman gain (4 x 2 matrix)
-            inverse = inv(C.dot(P).dot(C_transpose) + sig_obs)
+            inverse = inv(C.dot(P).dot(C_transpose) + var_obs)
             K = P.dot(C_transpose).dot(inverse)
             # compute true estimation based on predicted value and new observation
             true_estimation = predicted_estimation + K.dot(obs[i] - C.dot(predicted_estimation))
