@@ -1,15 +1,42 @@
 import numpy as np
 from numpy.linalg import inv
 from numpy.random import normal
+from sympy import *
+x, y = symbols('x y')
 
 
 class KalmanFilter(object):
 
-    def __init__(self, true_initial_state=np.array([10, 10, 0, 0]).reshape(4, 1), initial_estimation=np.array([0, 0, 0, 0]).reshape((4, 1)), acceleration=np.array([1, 1]).reshape((2, 1)), number_of_iters=10, delta_t=1, sig_acceleration=np.array([0.1, 0.1]), var_obs=np.matrix([[1, 0], [0, 1]])):
+    def __init__(
+        self,
+        true_initial_state=np.array([10, 10, 0, 0]).reshape(4, 1),
+        initial_estimation=np.array([0, 0, 0, 0]).reshape((4, 1)),
+        acceleration_function_x=0*x + 1,
+        acceleration_function_y=0*y + 1,
+        number_of_iters=10,
+        delta_t=1,
+        sig_acceleration=np.array([0.1, 0.1]),
+        var_obs=np.matrix([[1, 0], [0, 1]])
+    ):
+        acceleration = self.compute_acceleration(acceleration_function_x, acceleration_function_y, number_of_iters, delta_t)
         self.true_trajectory = self.generate_trajectory(true_initial_state, acceleration, number_of_iters, delta_t)
         self.obs = self.generate_observations(self.true_trajectory, var_obs)
         self.estimations = self.kalman(initial_estimation, self.obs, acceleration, number_of_iters, delta_t, sig_acceleration, var_obs)
         self.delta_t = delta_t
+
+    def compute_acceleration(
+        self,
+        acceleration_function_x,
+        acceleration_function_y,
+        number_of_iters,
+        delta_t
+    ):
+        acceleration = []
+        for i in range(number_of_iters):
+            t = delta_t * i
+            accel_t = np.array([acceleration_function_x.evalf(subs={x: t}).evalf(4), acceleration_function_y.evalf(subs={y: t}).evalf(4)], np.float_).reshape((2, 1))
+            acceleration.append(accel_t)
+        return acceleration
 
     def get_true_trajectory(self):
         return self.true_trajectory
@@ -74,7 +101,7 @@ class KalmanFilter(object):
 
         Keyword arguments:
         initial_state -- [px_0, py_0, vx_0, vy_0]'
-        acceleration -- [a_x, a_y]
+        acceleration -- [[a_x, a_y]']
         """
         states = []
         states.append(initial_state)
@@ -82,7 +109,7 @@ class KalmanFilter(object):
         B = self.control_matrix(delta_t)
         for i in range(1, number_of_iters):
             # state update
-            new_state = A.dot(states[i - 1]) + B.dot(acceleration)
+            new_state = A.dot(states[i - 1]) + B.dot(acceleration[i])
             states.append(new_state)
         return states
 
@@ -123,7 +150,7 @@ class KalmanFilter(object):
 
         for i in range(1, number_of_iters):
             # estimation update by prediction
-            predicted_estimation = np.dot(A, estimations[i - 1]) + np.dot(B, acceleration)
+            predicted_estimation = np.dot(A, estimations[i - 1]) + np.dot(B, acceleration[i])
             # update P
             P = (A.dot(P)).dot(A_transpose) + E_X
             # compute the Kalman gain (4 x 2 matrix)

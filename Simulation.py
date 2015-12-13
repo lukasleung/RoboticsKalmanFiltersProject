@@ -1,7 +1,9 @@
 import matplotlib.pyplot as plt
 
+
 class DifferenceType(object):
     Px, Py, Vx, Vy = range(4)
+
 
 class Simulation(object):
 
