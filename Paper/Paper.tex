@@ -88,7 +88,7 @@
 	\end{equation}
 	whose $\text{noise}\sim\mathcal{N}\left(0,\Sigma_x\right)$. The state transition matrix $A$ and control matrix $B$ are what we use in the program. They are only dependent on $t$, here representing the time step, so are constant matricies if we run the program with a fixed time interval setting. And the following defines the observation from the state
 	\begin{equation}
-		\mathbf{z}_k=\mathbf{H}\hat{\mathbf{x}}_k+\text{noise}
+		\mathbf{z}_k=\mathbf{C}\hat{\mathbf{x}}_k+\text{noise}
 	\end{equation}
 	which is
 	\begin{equation}
@@ -114,7 +114,7 @@
 	\subsection{Measure}\label{sub:measure}
 	The Kalman gain would be
 	\begin{equation}
-		k_k=p_k\mathbf{H}^T{\left(\mathbf{H}p_k\mathbf{H}^T+R\right)}^{-1}
+		k_k=p_k\mathbf{C}^T{\left(\mathbf{C}p_k\mathbf{C}^T+R\right)}^{-1}
 	\end{equation}
 	where $R$ is the convarience matrix of $E_z$. The system noise covariance matrix:
 	\begin{equation}
@@ -205,7 +205,7 @@
 	\]
 	and the initial estimations are
 	\[
-		\mathtt{true\_initial\_state}=
+		\mathtt{initial\_estimation}=
 		\begin{bmatrix}
 			0 \\ 0 \\ 0 \\ 0
 		\end{bmatrix}
@@ -233,7 +233,7 @@
 	%	SECTION 3
 	%----------------------------------------------------------------------------------------
 	\section{Conclusion}
-	We have plotted within the program with \texttt{matplotlib}, and one of the runs and the graphs are included below. We have plotted the trajectory in the $xy$-plane, along with the estimation; and the difference between teh real and estimated values of the state vector.
+	We have plotted within the program with \texttt{matplotlib}, and one of the runs and the graphs are included below. We have plotted the trajectory in the $xy$-plane, along with the estimation; and the difference between the real and estimated values of the state vector.
 	\begin{figure}[H]
 		\centering
 		\includegraphics[width=\textwidth]{TvE}
