@@ -40,5 +40,8 @@ Use a Kalman Filter to predict the movement of an object over space through time
 
 ---
 
-## Tool Kit
-- Coding in Python 3.4.3
+## Dependencies
+- Python 2.7
+- [Numpy](https://docs.scipy.org/doc/numpy-1.10.0/reference/)
+- [Sympy](http://www.sympy.org/en/index.html)
+- [Matplotlib](http://matplotlib.org/)
