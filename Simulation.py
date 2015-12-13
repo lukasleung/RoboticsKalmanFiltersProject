@@ -39,11 +39,17 @@ class Simulation(object):
             ['Previous True Positions', 'Previous Estimations', 'Current True Position', 'Current Estimation'],
             loc=2
         )
+        min_x = min([min(true_pos_x), min(estimated_pos_x)]) * 1.25
+        if min_x > 0:
+            min_x = 0
         max_x = max([max(true_pos_x), max(estimated_pos_x)]) * 1.25
+        min_y = min([min(true_pos_y), min(estimated_pos_y)]) * 1.25
+        if min_y > 0:
+            min_y = 0
         max_y = max([max(true_pos_y), max(estimated_pos_y)]) * 1.25
         axes = plt.gca()
-        axes.set_xlim([0, max_x])
-        axes.set_ylim([0, max_y])
+        axes.set_xlim([min_x, max_x])
+        axes.set_ylim([min_y, max_y])
 
         for i in range(n):
             if i >= 1:
@@ -58,6 +64,7 @@ class Simulation(object):
     def plot_difference_over_time(self, diff, delta_t, difference_type):
         n = len(diff)
         time = [delta_t * i for i in range(n)]
+        zeros = [0 for i in range(n)]
         max_time = max(time)
         if difference_type == DifferenceType.Px:
             diff_px = [diff[i][0, 0] for i in range(n)]
@@ -69,6 +76,7 @@ class Simulation(object):
             axes.set_xlim([-1, max_time])
             plt.scatter(time, diff_px)
             plt.plot(time, diff_px)
+            plt.plot(time, zeros, '0.0')
             plt.show()
         elif difference_type == DifferenceType.Py:
             diff_py = [diff[i][1, 0] for i in range(n)]
@@ -80,6 +88,7 @@ class Simulation(object):
             axes.set_xlim([-1, max_time])
             plt.scatter(time, diff_py)
             plt.plot(time, diff_py)
+            plt.plot(time, zeros, '0.0')
             plt.show()
         elif difference_type == DifferenceType.Vx:
             diff_vx = [diff[i][2, 0] for i in range(n)]
@@ -91,6 +100,7 @@ class Simulation(object):
             axes.set_xlim([-1, max_time])
             plt.scatter(time, diff_vx)
             plt.plot(time, diff_vx)
+            plt.plot(time, zeros, '0.0')
             plt.show()
         elif difference_type == DifferenceType.Vy:
             diff_vy = [diff[i][3, 0] for i in range(n)]
@@ -102,4 +112,5 @@ class Simulation(object):
             axes.set_xlim([-1, max_time])
             plt.scatter(time, diff_vy)
             plt.plot(time, diff_vy)
+            plt.plot(time, zeros, '0.0')
             plt.show()

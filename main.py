@@ -4,12 +4,19 @@ from Simulation import *
 from sympy import *
 x, y = symbols('x y')
 
+
+def functions():
+    f_x = 100 * sin(x)
+    f_y = -100 * cos(y)
+    return (f_x, f_y)
+
 if __name__ == "__main__":
+    fncs = functions()
     kalman = KalmanFilter(
-        true_initial_state=np.array([100, 3000, 100, 30]).reshape(4, 1),
+        true_initial_state=np.array([10, 10, 2, 2]).reshape(4, 1),
         number_of_iters=50,
-        acceleration_function_x=0*x + 5,
-        acceleration_function_y=0*y + 5,
+        acceleration_function_x=fncs[0],
+        acceleration_function_y=fncs[1],
         sig_acceleration=np.array([2.5, 2.5])
     )
     sim = Simulation(
