@@ -23,7 +23,7 @@
 
 \title{Robotics Project \\ Kalman Filter} % Title
 
-\author{Hoang, Lukas \textsc{Leung}, Zhuoming \textsc{Tan}} % Author name
+\author{Hoang \textsc{Viet Nguyen}, Lukas \textsc{Leung}, Zhuoming \textsc{Tan}} % Author name
 
 \date{\today} % Date for the report
 
@@ -38,9 +38,9 @@
 	\end{center}
 
 	% If you wish to include an abstract, uncomment the lines below
-	\begin{abstract}
-	Kalman filter.
-	\end{abstract}
+	% \begin{abstract}
+	% Kalman filter.
+	% \end{abstract}
 
 	%----------------------------------------------------------------------------------------
 	%	TABLE OF CONTENTS
@@ -56,8 +56,7 @@
 
 	\section{Introduction}\label{sec:intro}
 
-
-	In this project we will use Kalman filter to estimate the motion path of an aircraft.
+	In this project we will use Kalman filter to estimate the motion path of an aircraft. We are writing our program in python.
 
 	\subsection{Physics model}\label{sub:model}
 	The following model defines the state estimation:
@@ -88,7 +87,7 @@
 			a^{(t-1)}_x \\ a^{(t-1)}_y
 		\end{bmatrix}+\text{noise}
 	\end{equation}
-	whose $\text{noise}\sim\mathcal{N}\left(0,\Sigma_x\right)$. And the following defines the observation from the state
+	whose $\text{noise}\sim\mathcal{N}\left(0,\Sigma_x\right)$. The state transition matrix $A$ and control matrix $B$ are what we use in the program. They are only dependent on $t$, here representing the time step, so are constant matricies if we run the program with a fixed time interval setting. And the following defines the observation from the state
 	\begin{equation}
 		\mathbf{z}_k=\mathbf{H}\hat{\mathbf{x}}_k+\text{noise}
 	\end{equation}
@@ -105,7 +104,7 @@
 			p_x \\ p_y \\ v_x \\ v_y
 		\end{bmatrix}+\text{noise}
 	\end{equation}
-	whose $\text{noise}\sim\mathcal{N}\left(0,\Sigma_z\right)$.
+	whose $\text{noise}\sim\mathcal{N}\left(0,\Sigma_z\right)$. Because our estimation includes both position and velocity, but out measurement only has position, we have an measurement matrix $C$ to translate our measurement to estimation.
 
 	\subsection{Prediction}\label{sub:predict}
 	\begin{equation}
@@ -118,9 +117,9 @@
 	\begin{equation}
 		k_k=p_k\mathbf{H}^T{\left(\mathbf{H}p_k\mathbf{H}^T+R\right)}^{-1}
 	\end{equation}
-	where $r$ is the convarience matrix of $E_z$.
+	where $R$ is the convarience matrix of $E_z$. The system noise covariance matrix:
 	\begin{equation}
-		E_x=
+		Q=
 		\begin{bmatrix}
 			\sigma_1^2       &                  & \sigma_1\sigma_3 &                 \\
 			                 & \sigma_2^2       &                  & \sigma_2\sigma4 \\
@@ -128,9 +127,80 @@
 			                 & \sigma_4\sigma_2 &                  & \sigma_4^2      \\
 		\end{bmatrix}
 	\end{equation}
+	has been erased off the zero elements because we have assumed $x$ and $y$ velocities are independent.
 	%----------------------------------------------------------------------------------------
 	%	SECTION 2
 	%----------------------------------------------------------------------------------------
+	\section{Program}\label{sec:program}
 
+	\subsection{Initial Conditions}\label{sub:Initial Conditions}
+	The arguments we put into the program are explained below, with their default initial input.
+	\begin{equation}
+		\mathtt{true\_initial\_state}=
+		\begin{bmatrix}
+			p_{x0} \\ p_{y0} \\ v_{x0} \\ v_{y0}
+		\end{bmatrix}=
+		\begin{bmatrix}
+			10 \\ 10 \\ 0 \\ 0
+		\end{bmatrix}
+	\end{equation}
+
+	\begin{equation}
+		\mathtt{initial\_estimation}=
+		\begin{bmatrix}
+			p_{x0} \\ p_{y0} \\ v_{x0} \\ v_{y0}
+		\end{bmatrix}=
+		\begin{bmatrix}
+			0 \\ 0 \\ 0 \\ 0
+		\end{bmatrix}
+	\end{equation}
+
+	\begin{equation}
+			\mathtt{acceleration}=
+			\begin{bmatrix}
+				a_{x0} \\ a_{y0}
+			\end{bmatrix}=
+			\begin{bmatrix}
+				1 \\ 1
+			\end{bmatrix}
+	\end{equation}
+
+	\begin{equation}
+			(\mathtt{int})\ \mathtt{number\_of\_iters}=10
+	\end{equation}
+
+	\begin{equation}
+			(\mathtt{double})\ \mathtt{delta\_t}=1.0
+	\end{equation}
+
+	\begin{equation}
+			\mathtt{sig\_acceleration}=
+			\begin{bmatrix}
+				\mathrm{std\_dev}(a_x) & \mathrm{std\_dev}(a_y)
+			\end{bmatrix}=
+			\begin{bmatrix}
+				0.1 & 0.1
+			\end{bmatrix}
+	\end{equation}
+
+	\begin{equation}
+			\mathtt{var\_obs}=
+			\begin{bmatrix}
+				\mathrm{var}(\mathrm{observed}\_P_x) & 0 \\
+				0 & \mathrm{var}(\mathrm{observed}\_P_y) \\
+			\end{bmatrix}=
+			\begin{bmatrix}
+				1 & 0 \\
+				0 & 1
+			\end{bmatrix}
+	\end{equation}
+
+	\subsection{Process}\label{sub:Process}
+	The program generates the noisy observations by adding random Gaussian noise to the true trajectory.
+
+	%----------------------------------------------------------------------------------------
+	%	SECTION 3
+	%----------------------------------------------------------------------------------------
 	\section{Conclusion}
+	We have plotted within the program with \texttt{matplotlib}.
 \end{document}
