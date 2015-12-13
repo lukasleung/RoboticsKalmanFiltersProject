@@ -9,6 +9,7 @@ class KalmanFilter(object):
         self.true_trajectory = self.generate_trajectory(true_initial_state, acceleration, number_of_iters, delta_t)
         self.obs = self.generate_observations(self.true_trajectory, var_obs)
         self.estimations = self.kalman(initial_estimation, self.obs, acceleration, number_of_iters, delta_t, sig_acceleration, var_obs)
+        self.delta_t = delta_t
 
     def get_true_trajectory(self):
         return self.true_trajectory
@@ -22,6 +23,9 @@ class KalmanFilter(object):
         for i in range(n):
             diff.append(self.true_trajectory[i] - self.estimations[i])
         return diff
+
+    def get_delta_t(self):
+        return self.delta_t
 
     def state_transition_matrix(self, t):
         """ Compute the state transition matrix.
