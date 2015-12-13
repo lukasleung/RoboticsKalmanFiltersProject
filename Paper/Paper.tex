@@ -3,7 +3,6 @@
 %----------------------------------------------------------------------------------------
 %	SETTINGS
 %----------------------------------------------------------------------------------------
-
 \usepackage{amsmath}
 
 \usepackage{float}
@@ -23,7 +22,7 @@
 
 \title{Robotics Project \\ Kalman Filter} % Title
 
-\author{Hoang \textsc{Viet Nguyen}, Lukas \textsc{Leung}, Zhuoming \textsc{Tan}} % Author name
+\author{Hoang V. \textsc{Nguyen}, Lukas \textsc{Leung}, Zhuoming \textsc{Tan}} % Author name
 
 \date{\today} % Date for the report
 
@@ -134,7 +133,7 @@
 	\section{Program}\label{sec:program}
 
 	\subsection{Initial Conditions}\label{sub:Initial Conditions}
-	The arguments we put into the program are explained below, with their default initial input.
+	The arguments we put into the program are explained below, with their sample default initial input.
 	\begin{equation}
 		\mathtt{true\_initial\_state}=
 		\begin{bmatrix}
@@ -156,13 +155,11 @@
 	\end{equation}
 
 	\begin{equation}
-			\mathtt{acceleration}=
-			\begin{bmatrix}
-				a_{x0} \\ a_{y0}
-			\end{bmatrix}=
-			\begin{bmatrix}
-				1 \\ 1
-			\end{bmatrix}
+			\mathtt{acceleration\_function\_x}=1
+	\end{equation}
+
+	\begin{equation}
+			\mathtt{acceleration\_function\_y}=1
 	\end{equation}
 
 	\begin{equation}
@@ -196,11 +193,74 @@
 	\end{equation}
 
 	\subsection{Process}\label{sub:Process}
-	The program generates the noisy observations by adding random Gaussian noise to the true trajectory.
+	The program generates the noisy observations by adding random Gaussian noise to the true trajectory. Then through the run Kalman filter learns the error and tries to trace the real trajectory. Because it cannot measure the velocity of the object, the Kalman filter is working based on the measurement of the position of the object.
+
+	\subsection{Example Run}\label{sub:Example Run}
+	We put in the true initial state to be
+	\[
+		\mathtt{true\_initial\_state}=
+		\begin{bmatrix}
+			10 \\ 10 \\ 2 \\ 2
+		\end{bmatrix}
+	\]
+	and the initial estimations are
+	\[
+		\mathtt{true\_initial\_state}=
+		\begin{bmatrix}
+			0 \\ 0 \\ 0 \\ 0
+		\end{bmatrix}
+	\]
+	and the acceleration functions are now given as
+	\[
+		\mathtt{acceleration\_function\_x}=100\times\sin(x)
+	\]
+	\[
+		\mathtt{acceleration\_function\_y}=-100\times\cos(x)
+	\]
+	The iterations
+	\[
+		\mathtt{number\_of\_iters}=50
+	\]
+	and standard deviation of accelerations
+	\[
+		\mathtt{sig\_acceleration}=
+		\begin{bmatrix}
+			2.5 & 2.5
+		\end{bmatrix}
+	\]
 
 	%----------------------------------------------------------------------------------------
 	%	SECTION 3
 	%----------------------------------------------------------------------------------------
 	\section{Conclusion}
-	We have plotted within the program with \texttt{matplotlib}.
+	We have plotted within the program with \texttt{matplotlib}, and one of the runs and the graphs are included below. We have plotted the trajectory in the $xy$-plane, along with the estimation; and the difference between teh real and estimated values of the state vector.
+	\begin{figure}[H]
+		\centering
+		\includegraphics[width=\textwidth]{TvE}
+		\caption{Trajectory versus Estimation}
+	\end{figure}
+
+	\begin{figure}[H]
+		\centering
+		\includegraphics[width=\textwidth]{Diffpx}
+		\caption{Difference between real and estimated $x$ position}
+	\end{figure}
+
+	\begin{figure}[H]
+		\centering
+		\includegraphics[width=\textwidth]{Diffpy}
+		\caption{Difference between real and estimated $y$ position}
+	\end{figure}
+
+	\begin{figure}[H]
+		\centering
+		\includegraphics[width=\textwidth]{Diffvx}
+		\caption{Difference between real and estimated $x$ velocity}
+	\end{figure}
+
+	\begin{figure}[H]
+		\centering
+		\includegraphics[width=\textwidth]{Diffvy}
+		\caption{Difference between real and estimated $y$ velocity}
+	\end{figure}
 \end{document}
