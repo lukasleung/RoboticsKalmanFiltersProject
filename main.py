@@ -12,6 +12,9 @@ def functions():
 
 if __name__ == "__main__":
     fncs = functions()
+    print "\nAcceleration functions:\nf(x) = " + str(fncs[0])
+    print "f(y) = " + str(fncs[1])
+    print "\n"
     kalman = KalmanFilter(
         true_initial_state=np.array([10, 10, 2, 2]).reshape(4, 1),
         number_of_iters=50,
